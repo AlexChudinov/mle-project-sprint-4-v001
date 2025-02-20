@@ -40,11 +40,7 @@ pip install -r requirements.txt
 Скачайте их в директорию локального репозитория. Для удобства вы можете воспользоваться командой wget:
 
 ```
-wget https://storage.yandexcloud.net/mle-data/ym/tracks.parquet
-
-wget https://storage.yandexcloud.net/mle-data/ym/catalog_names.parquet
-
-wget https://storage.yandexcloud.net/mle-data/ym/interactions.parquet
+scripts/download_data.sh
 ```
 
 ## Запустите Jupyter Lab
