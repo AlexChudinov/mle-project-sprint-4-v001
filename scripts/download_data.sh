@@ -1,10 +1,12 @@
 #!/bin/bash
 
+set -e
+
 # Default values
 CONTEXT=.
 OUTPUT_DIR=$CONTEXT/ym
 VERBOSE=false
-
+FORCE=false
 
 function download_data() {
     wget https://storage.yandexcloud.net/mle-data/ym/tracks.parquet -O $OUTPUT_DIR/tracks.parquet
@@ -14,10 +16,13 @@ function download_data() {
     wget https://storage.yandexcloud.net/mle-data/ym/interactions.parquet -O $OUTPUT_DIR/interactions.parquet
 }
 
-
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
+        -f|--force)
+            FORCE=true
+            shift
+            ;;
         -c|--context)
             CONTEXT="$2"
             shift 2
@@ -33,6 +38,7 @@ while [[ $# -gt 0 ]]; do
         -h|--help)
             echo "Usage: $0 [options]"
             echo "Options:"
+            echo "  -f, --force                   Force download"
             echo "  -c, --context CONTEXT         Root directory (default: .)"
             echo "  -o, --output-dir OUTPUT_DIR   Output directory (default: $OUTPUT_DIR)"
             echo "  -v, --verbose                 Enable verbose mode"
@@ -44,6 +50,11 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+if [ -f "$OUTPUT_DIR/tracks.parquet" ] && [ -f "$OUTPUT_DIR/catalog_names.parquet" ] && [ -f "$OUTPUT_DIR/interactions.parquet" ] && ! $FORCE; then
+echo All files are already downloaded, if you need to forcely download them, please, use the -f or --force option
+exit 0
+fi
 
 # Use the parameters
 if [ "$VERBOSE" = true ]; then
