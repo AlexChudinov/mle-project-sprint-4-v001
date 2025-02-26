@@ -171,3 +171,5 @@ env_recsys_start/
 # data
 ym/
 data/
+/data
+.dvc_credentials
