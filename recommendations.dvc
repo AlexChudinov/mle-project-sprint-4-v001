@@ -1,0 +1,6 @@
+outs:
+- md5: 28e7ede76da50ec0c3a86194acf375ab.dir
+  size: 228509573
+  nfiles: 1
+  hash: md5
+  path: recommendations
