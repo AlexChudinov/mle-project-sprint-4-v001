@@ -175,3 +175,4 @@ data/
 .dvc_credentials
 recommendations/
 /recommendations
+catboost_info/
