@@ -10,6 +10,7 @@ from recsyslib.recomendations import Recommendations
 
 
 class Recommendation(BaseModel):
+    track_id: int
     track: str
     score: float
 
@@ -18,12 +19,15 @@ class Config:
     database: Path = Path("recommendations.db")
     item_data: Path = Path("ym/catalog_names.parquet")
     personal_recs: Path = Path("recommendations/personal_als.parquet")
+    similar_items: Path = Path("data/similar_items.parquet")
+
 
 _REC_STORE = Recommendations(Config.database)
 
 def _update_store():
     _REC_STORE.load_items(Config.item_data)
     _REC_STORE.load_personal(Config.personal_recs)
+    _REC_STORE.load_similar_items(Config.similar_items)
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -47,4 +51,4 @@ def update_store():
 @app.get("/recommendations")
 async def recommendations(user_id: int, k: int = 100) -> list[Recommendation]:
     recs = _REC_STORE.get(user_id, k)
-    return [Recommendation(track=rec.name, score=rec.score) for rec in recs.itertuples()]
+    return [Recommendation(track_id=rec.id, track=rec.name, score=rec.score) for rec in recs.itertuples()]

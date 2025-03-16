@@ -176,3 +176,4 @@ data/
 recommendations/
 /recommendations
 catboost_info/
+.vscode/

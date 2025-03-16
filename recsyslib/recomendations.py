@@ -46,16 +46,28 @@ class Recommendations:
 
         with sqlite3_connection(self._database_path) as conn:
             personal.to_sql("personal", conn, if_exists="replace", index=False)
-            conn.execute("CREATE INDEX IF NOT EXISTS personal_idx ON personal (user_id)")
+            conn.execute("CREATE INDEX IF NOT EXISTS personal_idx ON personal (user_id, item_id)")
 
         logger.info(f"Loaded")
+
+    def load_similar_items(self, path: Path):
+        if not path.exists():
+            raise ValueError(f"Similar items file '{path}' not found")
+        similar_items = pd.read_parquet(path)
+
+        if set(similar_items.columns) != {"item_id", "similar_item_id", "score"}:
+            raise ValueError(f"Similar items data file '{path}' has invalid columns: {similar_items.columns}")
+
+        with sqlite3_connection(self._database_path) as conn:
+            similar_items.to_sql("similar_items", conn, if_exists="replace", index=False)
+            conn.execute("CREATE INDEX IF NOT EXISTS similar_items_idx ON similar_items (item_id, similar_item_id)")
 
     def get(self, user_id: int, k: int=100) -> pd.DataFrame:
         recs = read_sqlite3_dump(
             self._database_path,
             f"""
                 SELECT
-                    i.name, p.score
+                    i.id, i.name, p.score
                 FROM personal p
                 JOIN items i ON i.id = p.item_id
                 WHERE p.user_id = {user_id} AND i.type = 'track'
