@@ -5,6 +5,10 @@ from fastapi.testclient import TestClient
 
 from recommendations_service import Config, app
 
+_COLD_USER_ID = 83
+_COMMON_USER_ID = 4
+_NOONLINE_USER_ID = 1374572
+
 _CLIENT = TestClient(app)
 
 @pytest.fixture(scope="package")
