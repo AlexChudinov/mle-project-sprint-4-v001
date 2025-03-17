@@ -18,33 +18,35 @@ def upload_store():
     yield
     os.unlink(Config.database)
 
-def test_personal_recommendations(upload_store):
-    resp = _CLIENT.get("/recommendations", params={"user_id": 23, "k": 5})
+def test_cold_user_recommendations(upload_store):
+    resp = _CLIENT.get("/recommendations", params={"user_id": _COLD_USER_ID, "k": 5})
     assert resp.status_code == 200
     assert resp.json() == [
-        {
-            'score': 1.3827400207519531,
-            'track': 'Twist in My Sobriety',
-            'track_id': 26312203,
-        },
-        {
-            'score': 1.3056058883666992,
-            'track': 'The Night Is Young',
-            'track_id': 23464071,
-        },
-        {
-            'score': 1.3046672344207764,
-            'track': 'Штрихкоды',
-            'track_id': 24279093,
-        },
-        {
-            'score': 1.3034749031066895,
-            'track': 'Мама',
-            'track_id': 23661034,
-        },
-        {
-            'score': 1.2895008325576782,
-            'track': 'Thinking About It (Let It Go)',
-            'track_id': 27373110,
-        },
+        {'track_id': 75638259, 'track': 'Hayatım', 'score': 0.9932301044464111},
+        {'track_id': 75113899, 'track': 'Mey Mənəm', 'score': 0.9910985827445984},
+        {'track_id': 67944495, 'track': 'Yanlışımsan', 'score': 0.9905444979667664},
+        {'track_id': 78555092, 'track': 'Təcili Yardım', 'score': 0.9901193380355835},
+        {'track_id': 79356346, 'track': 'Yaşamalı', 'score': 0.9886537194252014},
+    ]
+
+def test_common_user_recommendations(upload_store):
+    resp = _CLIENT.get("/recommendations", params={"user_id": _COMMON_USER_ID, "k": 5})
+    assert resp.status_code == 200
+    assert resp.json() == [
+        {'track_id': 83375864, 'track': 'Bad Decisions', 'score': 0.9774048924446106},
+        {'track_id': 78305163, 'track': 'Кровь', 'score': 0.9768791198730469},
+        {'track_id': 78305171, 'track': 'Удочка для охоты', 'score': 0.9728075861930847},
+        {'track_id': 89811429, 'track': 'DANCE-OFF', 'score': 0.9715034365653992},
+        {'track_id': 78305168, 'track': 'Фауст', 'score': 0.9686200618743896},
+    ]
+
+def test_no_inline_history_user_recommendations(upload_store):
+    resp = _CLIENT.get("/recommendations", params={"user_id": _NOONLINE_USER_ID, "k": 5})
+    assert resp.status_code == 200
+    assert resp.json() == [
+        {'track_id': 57185718, 'track': 'Молчи', 'score': 0.23754716631625744},
+        {'track_id': 50400505, 'track': 'Девочка с каре', 'score': 0.23598502810992045},
+        {'track_id': 40828285, 'track': 'Blood // Water', 'score': 0.23149700376960053},
+        {'track_id': 58515002, 'track': 'Дора дура', 'score': 0.22893907047393233},
+        {'track_id': 47627256, 'track': 'Cradles', 'score': 0.2252903148125851},
     ]
